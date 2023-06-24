@@ -53,15 +53,32 @@ app.use(notFoundMiddleWare);
 app.use(errorHandlerMiddleWare);
 const port = process.env.PORT || 5000;
 
-const start = async () => {
+const connect = async () => {
   try {
     const client = await connectDB(process.env.MONGO_URL);
-    app.listen(port, () =>
-      console.log(`Example app listening on port ${port}!`)
-    );
+    console.log(`MongoDB Connected: ${client.connection.host}`);
   } catch (error) {
     console.log(error);
+    process.exit(1);
   }
 };
 
-start();
+//Connect to the database before listening
+connect().then(() => {
+  app.listen(port, () => {
+    console.log("listening for requests");
+  });
+});
+
+// const start = async () => {
+//   try {
+//     const client = await connectDB(process.env.MONGO_URL);
+//     app.listen(port, () =>
+//       console.log(`Example app listening on port ${port}!`)
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+// start();
